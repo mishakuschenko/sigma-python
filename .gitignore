@@ -1,0 +1,5 @@
+.ropeproject
+backend/__pycache__
+backend/.venv
+
+.idea

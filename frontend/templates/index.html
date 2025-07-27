@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Python Online Editor</title>
+        <link
+            rel="icon"
+            href="{{ url_for('static', path='../static/cool.png') }}"
+            type="image/png"
+        />
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-okaidia.min.css"
+            rel="stylesheet"
+        />
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 20px;
+            }
+            .editor {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                max-width: 800px;
+                margin: 0 auto;
+            }
+            textarea {
+                width: 100%;
+                height: 300px;
+                font-family: monospace;
+                padding: 10px;
+            }
+            button {
+                padding: 10px;
+                background: #4caf50;
+                color: white;
+                border: none;
+                cursor: pointer;
+            }
+            pre {
+                background: #2d2d2d;
+                color: #f8f8f2;
+                padding: 10px;
+                border-radius: 5px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="editor">
+            <h1>Python Online Editor</h1>
+            <textarea id="code" placeholder="Введите Python-код...">
+print("Hello, World!")</textarea
+            >
+            <button onclick="runCode()">Run</button>
+            <h2>Output:</h2>
+            <pre id="output"></pre>
+        </div>
+
+        <!-- Подсветка синтаксиса -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+
+        <script>
+            async function runCode() {
+                const code = document.getElementById("code").value;
+                const outputElement = document.getElementById("output");
+
+                outputElement.textContent = "Выполнение...";
+
+                try {
+                    const response = await fetch("/run", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ code }),
+                    });
+
+                    const data = await response.json();
+                    outputElement.textContent = data.output;
+                } catch (error) {
+                    outputElement.textContent = "Ошибка: " + error.message;
+                }
+            }
+        </script>
+    </body>
+</html>
